@@ -3,7 +3,7 @@ package Intersection1;
 // LineSeg class with superclass AbstarctShape and interface CollisionDetector
 public class LineSeg extends AbstractShape implements CollisionDetector {
 
-    // a lineseg must have a begin and end value whcih are points
+    // a lineseg must have a begin and end value which are points
     private Point begin;
     private Point end;
 
@@ -11,7 +11,13 @@ public class LineSeg extends AbstractShape implements CollisionDetector {
     private static int numberOfInstances = 0;
 
     // called constructor
-    public LineSeg(Point b, Point e, boolean temp) {
+    public LineSeg(Point b, Point e, boolean temp) throws ShapeArgumentException {
+        
+    	// throws exception if out of bounds
+        if (b.equals(e)) {
+            throw new ShapeArgumentException("ShapeArgumentException in constructing LineSeg: start and end points coincide.");
+        }
+        
         this.begin = b;
         this.end = e;
         // if not temporary, increment instances
@@ -65,19 +71,25 @@ public class LineSeg extends AbstractShape implements CollisionDetector {
         // check if both ua and ub lie between 0 and 1, meaning the intersection occurs within the bounds of both segments
         return (ua >= 0 && ua <= 1) && (ub >= 0 && ub <= 1);
     }
-
+    
     // lineseg-rectangle intersection
     public boolean intersect(Rectangle s) {
-        // create line segments based on the sides of the rectangle
-        LineSeg[] sides = {
-            new LineSeg(s.getBottomLeft(), s.getBottomRight(), true),
-            new LineSeg(s.getBottomRight(), s.getTopRight(), true),
-            new LineSeg(s.getTopRight(), s.getTopLeft(), true),
-            new LineSeg(s.getTopLeft(), s.getBottomLeft(), true)
-        };
-        // iterate over the sides / line segments and calculate lineseg-lineseg intersection
-        for (LineSeg side : sides) {
-            if (this.intersect(side)) return true;
+        try {
+            // create line segments based on the sides of the rectangle
+            LineSeg[] sides = {
+                new LineSeg(s.getBottomLeft(), s.getBottomRight(), true),
+                new LineSeg(s.getBottomRight(), s.getTopRight(), true),
+                new LineSeg(s.getTopRight(), s.getTopLeft(), true),
+                new LineSeg(s.getTopLeft(), s.getBottomLeft(), true)
+            };
+            // iterate over the sides / line segments and calculate lineseg-lineseg intersection
+            for (LineSeg side : sides) {
+                if (this.intersect(side)) return true;
+            }
+        } catch (ShapeArgumentException e) {
+            System.out.println(e.getMessage());
+            // if an exception occurs, assume no intersection
+            return false;
         }
         return false;
     }

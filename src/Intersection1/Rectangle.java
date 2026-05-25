@@ -11,9 +11,16 @@ public class Rectangle extends AbstractShape implements CollisionDetector {
 
     // count the number of object instances for the subclass
     private static int numberOfInstances = 0;
-
+    
     // called constructor
-    public Rectangle(Point bl, Point tl, Point tr, Point br) {
+    public Rectangle(Point bl, Point tl, Point tr, Point br) throws ShapeArgumentException {
+    	
+    	// throws exception if out of bounds
+    	// left >= right || bottom >= top
+        if (bl.getX() >= br.getX() || bl.getY() >= tr.getY()) {
+            throw new ShapeArgumentException("ShapeArgumentException in constructing Rectangle: invalid boundaries.");
+        }
+        
         this.bottomLeft = bl;
         this.topLeft = tl;
         this.topRight = tr;
