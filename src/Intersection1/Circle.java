@@ -11,7 +11,13 @@ public class Circle extends AbstractShape implements CollisionDetector {
     private static int numberOfInstances = 0;
 
     // called constructor
-    public Circle(Point c, float r) {
+    public Circle(Point c, float r) throws ShapeArgumentException {
+    	
+    	// throws exception if out of bounds
+        if (r <= 0) {
+            throw new ShapeArgumentException("ShapeArgumentException in constructing Circle: radius must be greater than zero.");
+        }
+        
         this.center = c;
         this.radius = r;
         numberOfInstances++;
